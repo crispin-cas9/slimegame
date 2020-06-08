@@ -13,24 +13,23 @@ class Story1 extends Phaser.Scene {
     );
   }
 
+// on keypress? https://rexrainbow.github.io/phaser3-rex-notes/docs/site/keyboardevents/
+
+// intro sequences
 
   create () {
-    //add the intro
-    this.introsprite = this.add.sprite(300, 300, 'intro');
-    this.scene.start('Stage1');
-    //trying to make it wait 3 sec before starting
-    //OR start when you click
-    //but somehow it never works
-    // function scenechange() {
-    //   setTimeout(function () {
-    //       this.scene.start('Stage1');
-    //   }, 3000);
-    // }
-    // scenechange()
-    // this.pointer = this.scene.input.activePointer;
-    // if (this.pointer.isDown) {
-    //   this.scene.start('Stage1');
-    // }
+    this.anims.create({
+      key: 'introseq',
+      frames: this.anims.generateFrameNumbers('intro', {start: 0, end: 1}),
+      frameRate: 5,
+      repeat: 2
+    });
+
+    this.introsprite = this.add.sprite(400, 300, 'intro');
+    this.introsprite.on('animationcomplete', function() {
+      this.scene.start('Stage1');
+    }, this)
+    this.introsprite.play('introseq');
   }
 
   update(){

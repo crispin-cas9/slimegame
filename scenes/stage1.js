@@ -18,8 +18,8 @@ class Stage1 extends Phaser.Scene {
     this.load.spritesheet('frog',
       'assets/frog.png',
       {
-        frameWidth: 45,
-        frameHeight: 36
+        frameWidth: 39,
+        frameHeight: 30
       }
     );
     this.load.image('tile', 'assets/tile.png');
@@ -43,12 +43,16 @@ class Stage1 extends Phaser.Scene {
     this.map.setCollision([16, 17, 18, 19]);
     this.physics.add.collider(this.player, this.layer);
 
-    //slimeball collectables - doesn't work the way I want it to yet
-    this.slimegroup = this.physics.add.group({
+    // collectable frogs
+    // https://phaser.io/examples/v3/view/game-objects/group/multiple-adds
+    this.froggroup = this.physics.add.group(
+    {
       key: 'frog',
       repeat: 5,
-      setXY: { x: 200, y: 300, stepX: 40 }
-    });
+      setXY: { x: 600, y: 50, stepX: 50, stepY: 60}
+    }
+
+    );
 
     //this.slimegroup.body.setAllowGravity(false)
     //https://photonstorm.github.io/phaser3-docs/Phaser.Physics.Arcade.ArcadePhysics.html
@@ -89,7 +93,8 @@ class Stage1 extends Phaser.Scene {
       repeat: -1
     });
 
-    this.slimes = this.slimegroup.getChildren();
+    this.frogs = this.froggroup.getChildren();
+    this.score = 0
 
     //Phaser.Actions.SetTint(this.slimegroup.getChildren(), 0xff0000);
     //Phaser.Actions.IncX(this.slimegroup.getChildren(), 100);
@@ -100,7 +105,7 @@ class Stage1 extends Phaser.Scene {
   update(){
 
     //collecting/destroying the collectables
-    this.physics.add.overlap(this.player, this.slimegroup, this.collectSlime, null, this);
+    this.physics.add.overlap(this.player, this.froggroup, this.collectFrog, null, this);
 
     //play animation if this key is down
     if (this.cursors.left.isDown) {
@@ -127,12 +132,17 @@ class Stage1 extends Phaser.Scene {
 
   }
 
-  createSlime(){
-    this.slimegroup.add(this.add.sprite(200, 300, 'slime'))
+  createFrog(){
+    this.froggroup.add(this.add.sprite(200, 300, 'frog'))
   }
 
-  collectSlime(player, slime){
-    slime.destroy()
+  collectFrog(player, frog){
+    frog.destroy()
+    this.score += 1;
+    if (this.score === 6) {
+      this.finishText = this.add.text(16, 16, 'THANKS FOR PLAYING!',
+        {fontSize: '32px', fill: '#ffffff'});
+    }
   }
 
 };
